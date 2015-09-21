@@ -108,6 +108,18 @@ wss.on('request', function(request) {
     } else if (globalsshuser) {
         sshuser = globalsshuser + '@';
     }
+    console.log(request.resource);
+
+    var regex_sshhost = /host=([\w-_\.]*)/,
+        regex_sshuser = /sshuser=([\w-_]*)/,
+        regex_protocol = /protocol=((telnet|ssh))/;
+
+    sshhost = request.resource.match(regex_sshhost) ? request.resource.match(regex_sshhost)[1] : "" ;
+    sshuser = request.resource.match(regex_sshuser) ? request.resource.match(regex_sshuser)[1] + "@" : "nobody@";
+
+    protocol = request.resource.match(regex_protocol) ? request.resource.match(regex_protocol)[1] : "";
+    console.log(protocol)
+
     conn.on('message', function(msg) {
         var data = JSON.parse(msg.utf8Data);
         if (!term) {
@@ -118,11 +130,21 @@ wss.on('request', function(request) {
                     rows: 30
                 });
             } else {
-                term = pty.spawn('ssh', [sshuser + sshhost, '-p', sshport, '-o', 'PreferredAuthentications=' + sshauth], {
-                    name: 'xterm-256color',
-                    cols: 80,
-                    rows: 30
-                });
+                switch (protocol){
+                  case "telnet":
+                    term = pty.spawn('telnet', [sshhost], {
+                        name: 'xterm-256color',
+                        cols: 80,
+                        rows: 30
+                    });break;
+                  default:
+                      term = pty.spawn('ssh', [sshuser + sshhost, '-p', sshport, '-o', 'PreferredAuthentications=' + sshauth], {
+                          name: 'xterm-256color',
+                          cols: 80,
+                          rows: 30
+                      });
+                }
+
             }
             console.log((new Date()) + " PID=" + term.pid + " STARTED on behalf of user=" + sshuser)
             term.on('data', function(data) {

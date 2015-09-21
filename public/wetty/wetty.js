@@ -30,7 +30,12 @@ Wetty.prototype.onTerminalResize = function(col, row) {
         }));
 };
 
-ws = new WebSocket(((window.location.protocol === 'https:') ? 'wss://' : 'ws://') + window.location.host + window.location.pathname, 'wetty');
+var regex_sshhost = /host=([\w-_\.]*)/;
+sshhost = window.location.search.match(regex_sshhost) ? window.location.search.match(regex_sshhost)[1] : "Error: no host" ;
+document.title = sshhost;
+
+
+ws = new WebSocket(((window.location.protocol === 'https:') ? 'wss://' : 'ws://') + window.location.host + window.location.pathname + window.location.search, 'wetty');
 ws.onopen = function() {
     lib.init(function() {
         term = new hterm.Terminal();
