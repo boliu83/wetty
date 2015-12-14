@@ -14632,7 +14632,7 @@ hterm.VT.ESC['~'] = function() {
  * We only change the window title.
  */
 hterm.VT.OSC['0'] = function(parseState) {
-  this.terminal.setWindowTitle(parseState.args[0]);
+  //this.terminal.setWindowTitle(parseState.args[0]);
 };
 
 /**
@@ -16064,5 +16064,3 @@ lib.resource.add('hterm/git/HEAD', 'text/plain',
 '5db5b0ceefff97ce8b7a97edd3f5ba6857db54cf' +
 ''
 );
-
-

@@ -47,7 +47,7 @@ ws.onopen = function() {
         term.prefs_.set('ctrl-c-copy', true);
         term.prefs_.set('ctrl-v-paste', true);
         term.prefs_.set('use-default-window-copy', true);
-
+        term.setWindowTitle(sshhost);
         term.runCommandClass(Wetty, document.location.hash.substr(1));
         ws.send(JSON.stringify({
             rowcol: true,
